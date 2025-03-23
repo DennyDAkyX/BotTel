@@ -76,8 +76,6 @@ def main() -> None:
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
-
-
     #per caricare su docker -H ssh://161.35.31.29 compose up --build
 
 
