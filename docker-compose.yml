@@ -1,0 +1,9 @@
+service:
+  bot:
+   build: . #qui viene chiamato il file di dockerfile
+   ports: 
+    - 8443:8443
+   environment:
+    - TEST_VARIABILE = "123"
+   env_file:
+    - .env
