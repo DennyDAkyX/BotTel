@@ -10,7 +10,7 @@ the Application and registered at their respective places.
 Then, the bot is started and runs until we press Ctrl-C on the command line.
 
 Usage:
-Basic Echobot example, repeats messages.
+Basic troll calc(Echobot) example, repeats messages.
 Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
@@ -19,8 +19,8 @@ import logging
 
 
 from telegram import ForceReply, Update
-from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
-
+from telegram.ext import Application, CommandHandler, CallbackContext, ContextTypes, MessageHandler, filters
+import random
 
 import os
 from dotenv import load_dotenv
@@ -35,6 +35,25 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+
+
+
+#funzioni per fa calcoli sbagliati
+#qui definisco funzione che  genera risultato sbagliato
+def wrongCalc(correctResult):
+    return correctResult + random.randint(-5,5)
+
+#questa è la funzione per i calcoli
+async def calcola(update:Update, contex: CallbackContext)-> None:
+    try:
+        espressione = update.message.text #qui scrivo i numeri
+        correctResult = eval(espressione)
+        wrongResult = wrongCalc(correctResult)
+        await update.message.reply_text(f"il risultato di {espressione} e :{wrongResult}")
+    except:
+        await update.message.reply_text("operazione matematica non riconosciuta ripeti....")
+
+
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -52,11 +71,12 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     """Send a message when the command /help is issued."""
     await update.message.reply_text("Help!")
 
-
+#funzioni per echobot
+'''
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Echo the user message."""
     await update.message.reply_text(update.message.text)
-
+'''
 
 def main() -> None:
     TOCKEN_TELEGRAM = os.getenv("TOCKEN_TELEGRAM")
@@ -70,11 +90,12 @@ def main() -> None:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
 
-    # on non command i.e message - echo the message on Telegram
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+    # on non command i.e message -calculate (echo) the message on Telegram 
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND,calcola))
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)
+    #application.run_webhook
 
     #per caricare su docker -H ssh://161.35.31.29 compose up --build
 
