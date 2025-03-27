@@ -45,6 +45,7 @@ def wrongCalc(correctResult):
 
 #questa è la funzione per i calcoli
 async def calcola(update:Update, contex: CallbackContext)-> None:
+
     try:
         espressione = update.message.text #qui scrivo i numeri
         correctResult = eval(espressione)
@@ -53,6 +54,7 @@ async def calcola(update:Update, contex: CallbackContext)-> None:
     except:
         await update.message.reply_text("operazione matematica non riconosciuta ripeti....")
 
+#funzione consigli sbagliati
 
 
 
@@ -65,6 +67,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         rf"Hi {user.mention_html()}!",
         reply_markup=ForceReply(selective=True),
     )
+    #parla
+    await update.message.reply_text("Ciao sono un bot semplice e intelligente faccio i calcoli.....provare per credere")
+   
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -85,6 +90,8 @@ def main() -> None:
     """Start the bot."""
     # Create the Application and pass it your bot's token.
     application = Application.builder().token(TOCKEN_TELEGRAM).build()
+
+    
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("start", start))
