@@ -7,8 +7,8 @@ WORKDIR /app
 #copia i file requirement.txt e bot.py nella directory di lavoro
 COPY requirements.txt .
 COPY bot.py .
-COPY privkey.pem .
-COPY fullchain.pem .
+#COPY privkey.pem .
+#COPY fullchain.pem .
 
 #installa le dipendenze
 RUN pip install --no-cache-dir -r requirements.txt 

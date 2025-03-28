@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  telegram-bot:
+    image: dennydackyx/botTelg
+    container_name: Bot_consigli_calcola
+    restart: unless-stopped
+

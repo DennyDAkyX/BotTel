@@ -1,9 +1,13 @@
-service:
+version: '3.0'
+
+services:
   bot:
-   build: . #qui viene chiamato il file di dockerfile
-   ports: 
-    - 8443:8443
-   environment:
-    - TEST_VARIABILE = "123"
+   #qui viene chiamato il file di dockerfile 
+   build: .
+   container_name: bot_telegram
+   #ports: 
+    #- 8443:8443
+  # environment:
+   # - TEST_VARIABILE = "123"
    env_file:
     - .env

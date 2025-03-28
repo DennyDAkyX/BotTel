@@ -101,7 +101,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         reply_markup=ForceReply(selective=True),
     )
     #parla
-    await update.message.reply_text("Ciao sono un bot semplice e intelligente faccio i calcoli e do consigli.....provare per credere [coamndo /calcola o /consiglo]")
+    await update.message.reply_text("Ciao sono un bot semplice e intelligente faccio i calcoli e do consigli.....provare per credere [coamndo /calcola o /consiglio]")
     #await update.message.reply_tex("se si desidera la finzione calcoli digitare /calcola, se vuoi consigli /consigli")
     
 
