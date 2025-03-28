@@ -41,10 +41,23 @@ logger = logging.getLogger(__name__)
 #funzioni per fa calcoli sbagliati
 #qui definisco funzione che  genera risultato sbagliato
 def wrongCalc(correctResult):
-    return correctResult + random.randint(-5,5)
+    return correctResult + random.randint(-10,10)
 
 #questa è la funzione per i calcoli
-async def calcola(update:Update, contex: CallbackContext)-> None:
+async def calcola(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if update.message.text.startswith("/calcola"):
+        try:
+            expression = " ".join(context.args)
+            if not expression:
+                await update.message.reply_text("Devi scrivere un'operazione dopo /calcola, es: /calcola 2+2")
+                return
+            correctResult = eval(expression)
+            wrongResult = wrongCalc(correctResult)
+            await update.message.reply_text(f"Il risultato di {expression} è: {wrongResult}")
+        except:
+            await update.message.reply_text("Operazione matematica non riconosciuta, ripeti...")
+
+'''async def calcola(update:Update, contex: CallbackContext)-> None:
 
     try:
         espressione = update.message.text #qui scrivo i numeri
@@ -53,9 +66,29 @@ async def calcola(update:Update, contex: CallbackContext)-> None:
         await update.message.reply_text(f"il risultato di {espressione} e :{wrongResult}")
     except:
         await update.message.reply_text("operazione matematica non riconosciuta ripeti....")
+    
+     # on non command i.e message -calculate (echo) the message on Telegram     
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND,calcola))
+#------------------------------------------
+'''
+#funzione consigli sbagliati--------------------------
+def bad_advice(category):
+    advice_dict = {
+        "amore": ["Ignorala per mesi, così capirà che la vuoi!", "Se ti piace qualcuno, insultalo un po' per attirare attenzione."],
+        "soldi": ["Metti tutti i tuoi risparmi in criptovalute sconosciute!", "Compra biglietti della lotteria, è un investimento sicuro.", "vuoi dei numeri vincenti?......chiedi a Padre Pio"],
+        "salute": ["Mangia solo cibo fritto, così avrai più energia!", "Dormi solo 2 ore a notte, il resto è tempo sprecato!"],
+    }
+    return random.choice(advice_dict.get(category.lower(), ["Non ho consigli per questa categoria, ma fidati di me lo stesso! 😂"]))
 
-#funzione consigli sbagliati
-
+async def consiglio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    category = " ".join(context.args)
+    if not category:
+        await update.message.reply_text("Dimmi una categoria! Es: /consiglio amore, /consiglio soldi o /consiglio salute")
+        return
+    
+    advice = bad_advice(category)
+    await update.message.reply_text(f"Ecco un consiglio per {category}: {advice}")
+#------------------------------------------------
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -68,8 +101,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         reply_markup=ForceReply(selective=True),
     )
     #parla
-    await update.message.reply_text("Ciao sono un bot semplice e intelligente faccio i calcoli.....provare per credere")
-   
+    await update.message.reply_text("Ciao sono un bot semplice e intelligente faccio i calcoli e do consigli.....provare per credere [coamndo /calcola o /consiglo]")
+    #await update.message.reply_tex("se si desidera la finzione calcoli digitare /calcola, se vuoi consigli /consigli")
+    
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -84,9 +118,11 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 '''
 
 def main() -> None:
+    #Tocken telegram
     TOCKEN_TELEGRAM = os.getenv("TOCKEN_TELEGRAM")
     if TOCKEN_TELEGRAM is None:
         raise EnvironmentError("TOCKEN NON VALIDO")
+
     """Start the bot."""
     # Create the Application and pass it your bot's token.
     application = Application.builder().token(TOCKEN_TELEGRAM).build()
@@ -97,9 +133,11 @@ def main() -> None:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
 
-    # on non command i.e message -calculate (echo) the message on Telegram 
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND,calcola))
+    # on non command i.e message -calculate e consigli (echo) the message on Telegram 
+    application.add_handler(CommandHandler("calcola", calcola))
 
+    application.add_handler(CommandHandler("consiglio", consiglio))
+ 
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)
     #application.run_webhook

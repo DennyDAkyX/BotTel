@@ -4,9 +4,9 @@ FROM python:3.11-slim
 #imposta una directory all'interno del containar
 WORKDIR /app
 
-#copia i file requirement.txt e main.py nella directory di lavoro
+#copia i file requirement.txt e bot.py nella directory di lavoro
 COPY requirements.txt .
-COPY main.py .
+COPY bot.py .
 COPY privkey.pem .
 COPY fullchain.pem .
 
@@ -17,6 +17,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8443
 
 #comando per avviare l'app
-#CMD [ "python3", "bot.py" ]
+CMD [ "python3", "bot.py" ]
 
 
